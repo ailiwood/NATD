@@ -24,6 +24,19 @@ class Cic_2018_Dataset(Dataset):
         df = pd.concat((pd.read_csv(f, low_memory=False) for f in iglob(data_dir, recursive=True)), ignore_index=True)
         print(f"=============== Data_{split} loading has completed ✅ ===============")
 
+
+        cols_to_drop = ['Unnamed: 0', 'Timestamp', 'Flow ID', 'Dst IP', 'Src IP']
+        
+
+        for col in cols_to_drop:
+            if col in df.columns:
+                df.drop(col, axis=1, inplace=True)
+
+        for f in df.columns:
+            if f == 'Label':
+                df[f] = LabelEncoder().fit_transform(df[f])
+
+
         for col in ['Unnamed: 0', 'Timestamp', 'Flow ID']:
             if col in df.columns:
                 df.drop(col, axis=1, inplace=True)
